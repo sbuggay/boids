@@ -29,7 +29,8 @@ function draw() {
         quadtree.insert(boid);
     }
 
-    for (let boid of flock) {
+    for (let i = 0; i < flock.length; i++) {
+        let boid = flock[i];
         let range = new Rect(boid.position.x, boid.position.y, boid.perception, boid.perception);
         let localFlock = quadtree.query(range);
 
@@ -37,6 +38,13 @@ function draw() {
             boid.update(localFlock);
 
         boid.render();
+
+        if (window.debug === 1 && i === 0) {
+            stroke(0, 0, 255);
+            fill(0, 0, 0, 0);
+            rectMode(CENTER);
+            rect(range.x, range.y, range.w * 2, range.h * 2);
+        }
     }
 
     if (window.debug === 1) {

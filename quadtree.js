@@ -105,6 +105,8 @@ class QuadTree {
         if (this.se) this.se.render();
         if (this.sw) this.sw.render();
 
+        if (this.ne && this.nw && this.se && this.sw) return; // Don't render if we render all children
+
         push();
         stroke(200, 200, 200, 100);
         fill(0, 0, 0, 0);
