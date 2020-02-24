@@ -1,23 +1,30 @@
-const flock = [];
+let flock = [];
 let quadtree;
 window.debug = 0; // 0, 1, 2, 3
 
 function setup() {
-    const min = Math.min(windowWidth, windowHeight)
-    const canvas = createCanvas(min, min);
+    
+    const width = Math.min(800, windowWidth);
+
+    const canvas = createCanvas(width, width);
     canvas.parent("sketch");
 
-    for (let i = 0; i < 300; i++) {
-        const boid = new Boid()
-        flock.push(boid);
-    }
+    reset();
 
 }
 
-function draw() {
-    background(51);
+function reset() {
+    flock = [];
+    for (let i = 0; i < 250; i++) {
+        const boid = new Boid()
+        flock.push(boid);
+    }
+}
 
-    quadtree = new QuadTree(new Rect(width / 2, height / 2, width / 2, height / 2), 1);
+function draw() {
+    background(20);
+
+    quadtree = new QuadTree(new Rect(width / 2, height / 2, width / 2, height / 2), 4);
 
     for (let boid of flock) {
         quadtree.insert(boid);
@@ -35,9 +42,16 @@ function draw() {
     }
 }
 
+debugButton.onclick = () => {
+    window.debug = (window.debug + 1) % 2;
+}
+
 function keyReleased() {
     if (key === "d") {
         window.debug = (window.debug + 1) % 2;
+    }
+    else if (key === "r") {
+        reset();
     }
     return false; // prevent any default behavior
 }

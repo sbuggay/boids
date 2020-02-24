@@ -1,11 +1,13 @@
+const maxSpeed = 4;
+const maxForce = 0.05;
+const size = 15;
+const maxPercieved = 30;
+
 class Boid {
     constructor() {
         this.position = createVector(random(width), random(height));
         this.velocity = p5.Vector.random2D();
         this.acceleration = createVector();
-        this.maxSpeed = 4;
-        this.maxForce = 0.05;
-        this.size = 15;
         this.perception = 50;
         this.affected = false;
     }
@@ -22,13 +24,15 @@ class Boid {
                 wish.add(boid.velocity);
                 count++;
             }
+
+            if (count >= maxPercieved) break;
         }
 
         if (count > 0) {
             wish.div(count);
-            wish.setMag(this.maxSpeed);
+            wish.setMag(maxSpeed);
             wish.sub(this.velocity);
-            wish.limit(this.maxForce);
+            wish.limit(maxForce);
             this.affected = true;
         }
         return wish;
@@ -46,14 +50,16 @@ class Boid {
                 wish.add(boid.position);
                 count++;
             }
+
+            if (count >= maxPercieved) break;
         }
 
         if (count > 0) {
             wish.div(count);
             wish.sub(this.position);
-            wish.setMag(this.maxSpeed);
+            wish.setMag(maxSpeed);
             wish.sub(this.velocity);
-            wish.limit(this.maxForce);
+            wish.limit(maxForce);
             this.affected = true;
         }
         return wish;
@@ -65,18 +71,20 @@ class Boid {
         for (let boid of boids) {
             if (boid === this) continue;
             let d = dist(this.position.x, this.position.y, boid.position.x, boid.position.y);
-            if (d < (this.perception)) {
+            if (d < (this.perception / 2)) {
                 let diff = p5.Vector.sub(this.position, boid.position);
                 diff.div(d * d);
                 wish.add(diff);
                 count++;
             }
+
+            if (count >= maxPercieved) break;
         }
         if (count > 0) {
             wish.div(count);
-            wish.setMag(this.maxSpeed);
+            wish.setMag(maxSpeed * 2);
             wish.sub(this.velocity);
-            wish.limit(this.maxForce);
+            wish.limit(maxForce);
         }
         return wish;
     }
@@ -89,12 +97,15 @@ class Boid {
         this.acceleration.add(this.separation(boids));
 
         if (window.mouse) {
-            const wish = p5.Vector.sub(createVector(window.mouse.x, window.mouse.y), this.position);
-            this.acceleration.add(wish);
+            if (window.mouse.x <= width && window.mouse.x >= 0 && window.mouse.y <= height && window.mouse.y >= 0) {
+
+                const wish = p5.Vector.sub(createVector(window.mouse.x, window.mouse.y), this.position);
+                this.acceleration.add(wish);
+            }
         }
 
         this.velocity.add(this.acceleration);
-        this.velocity.limit(this.maxSpeed);
+        this.velocity.limit(maxSpeed);
         this.position.add(this.velocity);
         this.acceleration.mult(0);
 
@@ -114,8 +125,8 @@ class Boid {
         strokeWeight(1);
         stroke(255);
 
-        const h = Math.sqrt(this.size ** 2 - (this.size / 2) ** 2);
-        triangle(h / 2, 0, h / -2, this.size / 3, h / -2, this.size / -3);
+        const h = Math.sqrt(size ** 2 - (size / 2) ** 2);
+        triangle(h / 2, 0, h / -2, size / 3, h / -2, size / -3);
 
         if (window.debug === 2) {
             stroke(this.affected ? color(0, 100, 0) : 100);
