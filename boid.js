@@ -3,7 +3,7 @@ class Boid {
         this.position = createVector(random(width), random(height));
         this.velocity = p5.Vector.random2D();
         this.acceleration = createVector();
-        this.maxSpeed = 2;
+        this.maxSpeed = 3;
         this.maxForce = 0.1;
         this.size = 15;
         this.perception = 40;
