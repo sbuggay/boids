@@ -3,8 +3,8 @@ class Boid {
         this.position = createVector(random(width), random(height));
         this.velocity = p5.Vector.random2D();
         this.acceleration = createVector();
-        this.maxSpeed = 3;
-        this.maxForce = 0.1;
+        this.maxSpeed = 4;
+        this.maxForce = 0.05;
         this.size = 15;
         this.perception = 50;
         this.affected = false;
@@ -87,6 +87,11 @@ class Boid {
         this.acceleration.add(this.align(boids));
         this.acceleration.add(this.cohesion(boids));
         this.acceleration.add(this.separation(boids));
+
+        if (window.mouse) {
+            const wish = p5.Vector.sub(createVector(window.mouse.x, window.mouse.y), this.position);
+            this.acceleration.add(wish);
+        }
 
         this.velocity.add(this.acceleration);
         this.velocity.limit(this.maxSpeed);
