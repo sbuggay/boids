@@ -3,9 +3,10 @@ class Boid {
         this.position = createVector(random(width), random(height));
         this.velocity = p5.Vector.random2D();
         this.acceleration = createVector();
-        this.maxSpeed = 10;
+        this.maxSpeed = 5;
         this.maxForce = 5;
         this.size = 15;
+        this.perception = 50;
     }
 
     align(boids) {
@@ -16,7 +17,7 @@ class Boid {
         for (let boid of boids) {
             if (boid === this) continue;
 
-            if (dist(this.position.x, this.position.y, boid.position.x, boid.position.y) < 50) {
+            if (dist(this.position.x, this.position.y, boid.position.x, boid.position.y) < this.perception) {
                 wish.add(boid.velocity);
                 count++;
             }
@@ -28,6 +29,29 @@ class Boid {
             wish.sub(this.velocity);
             wish.limit(this.maxForce);
 
+        }
+        return wish;
+    }
+
+    cohesion(boids) {
+        let wish = createVector();
+
+        let count = 0;
+
+        for (let boid of boids) {
+            if (boid === this) continue;
+
+            if (dist(this.position.x, this.position.y, boid.position.x, boid.position.y) < this.perception) {
+                wish.add(boid.velocity);
+                count++;
+            }
+        }
+
+        if (count > 0) {
+            wish.div(count);
+            wish.setMag(this.maxSpeed);
+            wish.sub(this.velocity);
+            wish.limit(this.maxForce);
         }
         return wish;
     }
