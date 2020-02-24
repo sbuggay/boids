@@ -6,7 +6,7 @@ class Boid {
         this.maxSpeed = 3;
         this.maxForce = 0.1;
         this.size = 15;
-        this.perception = 40;
+        this.perception = 50;
         this.affected = false;
     }
 
@@ -111,8 +111,12 @@ class Boid {
 
         const h = Math.sqrt(this.size ** 2 - (this.size / 2) ** 2);
         triangle(h / 2, 0, h / -2, this.size / 3, h / -2, this.size / -3);
-        // stroke(this.affected ? color(0, 100, 0) : 100);
-        // circle(0, 0, this.perception * 2);
+
+        if (window.debug === 2) {
+            stroke(this.affected ? color(0, 100, 0) : 100);
+            circle(0, 0, this.perception * 2);
+        }
+
         pop();
     }
 }
