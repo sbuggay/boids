@@ -1,30 +1,40 @@
 const flock = [];
-let qt;
+let quadtree;
 
 function setup() {  
     createCanvas(800, 800);
 
 
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 500; i++) {
         const boid = new Boid()
         flock.push(boid);
-
     }
 
-    
 }
 
 function draw() {
     background(51);
 
-    qt = new QuadTree(new Rect(width / 2, height / 2, width / 2, height / 2), 2);
+    quadtree = new QuadTree(new Rect(width / 2, height / 2, width / 2, height / 2), 4);
 
 
     for (let boid of flock) {
-        boid.update(flock);
-        qt.insert(boid.position);
+
+        quadtree.insert(boid);
+
+        let range = new Rect(boid.position.x, boid.position.y, boid.perception, boid.perception);
+        // push();
+        // stroke(0, 200, 0, 100);
+        // fill(0, 0, 0, 0);
+        // rectMode(CENTER);
+        // translate(range.x, range.y);
+        // rect(0, 0, range.w * 2, range.h * 2)
+        // pop();
+        let localFlock = quadtree.query(range);
+        boid.update(localFlock);
+        
         boid.render();
     }
 
-    qt.render();
+    quadtree.render();
 }

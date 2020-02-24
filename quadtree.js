@@ -19,6 +19,13 @@ class Rect {
             point.y >= this.y - this.h &&
             point.y < this.y + this.h);
     }
+
+    intersects(range) {
+        return !(range.x - range.w > this.x + this.w ||
+            range.x + range.w < this.x - this.w ||
+            range.y - range.h > this.y + this.h ||
+            range.y + range.h < this.y - this.h);
+    }
 }
 
 class QuadTree {
@@ -29,23 +36,48 @@ class QuadTree {
         this.divided = false;
     }
 
-    insert(point) {
+    insert(boid) {
+
+        const point = boid.position;
 
         if (!this.boundary.contains(point)) return;
 
         if (this.list.length < this.capacity) {
-            this.list.push(point);
+            this.list.push(boid);
         }
         else {
             if (!this.divided) {
                 this.subdivide();
             }
 
-            this.ne.insert(point);
-            this.nw.insert(point);
-            this.sw.insert(point);
-            this.se.insert(point);
+            this.ne.insert(boid);
+            this.nw.insert(boid);
+            this.sw.insert(boid);
+            this.se.insert(boid);
         }
+    }
+
+    query(range, found) {
+        if (!found) {
+            found = [];
+        }
+
+        if (!this.boundary.intersects(range)) {
+            return;
+        } else {
+            for (let p of this.list) {
+                if (range.contains(p.position)) {
+                    found.push(p);
+                }
+            }
+            if (this.divided) {
+                this.nw.query(range, found);
+                this.ne.query(range, found);
+                this.se.query(range, found);
+                this.sw.query(range, found);
+            }
+        }
+        return found;
     }
 
     subdivide() {
@@ -74,14 +106,12 @@ class QuadTree {
         if (this.sw) this.sw.render();
 
         push();
-        stroke(200);
+        stroke(200, 200, 200, 100);
         fill(0, 0, 0, 0);
         rectMode(CENTER);
         translate(this.boundary.x, this.boundary.y);
         rect(0, 0, this.boundary.w * 2, this.boundary.h * 2)
         pop();
-
-
     }
 }
 
