@@ -93,7 +93,10 @@ class Boid {
 
         if (window.mouse) {
             if (window.mouse.x <= width && window.mouse.x >= 0 && window.mouse.y <= height && window.mouse.y >= 0) {
+                const d = dist(this.position.x, this.position.y, window.mouse.x, window.mouse.y);
                 const wish = p5.Vector.sub(createVector(window.mouse.x, window.mouse.y), this.position);
+                wish.div(d ** 2);
+                wish.mult(10);
                 this.acceleration.add(wish);
             }
         }

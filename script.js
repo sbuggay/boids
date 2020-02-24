@@ -51,10 +51,7 @@ function draw() {
         quadtree.render();
     }
 
-    setInterval(() => {
-        fps = frameRate();
-    }, 100);
-
+    fps = frameRate();
     fill(fps >= 60 ? "green" : "red");
     stroke(0);
     text(fps.toFixed(2), 10, 20);
