@@ -55,7 +55,7 @@ class Boid {
             let d = dist(this.position.x, this.position.y, boid.position.x, boid.position.y);
             // if (d < (this.perception / 2)) {
                 let diff = p5.Vector.sub(this.position, boid.position);
-                diff.div(d * d);
+                diff.div(d ** 2);
                 wish.add(diff);
             // }
         }
